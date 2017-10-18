@@ -9,6 +9,13 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), "../data/feedbacks.txt")
 
 
 class IndexHandler(tornado.web.RequestHandler):
+    '''
+    ルートディレクトリにリクエストがあった場合に呼び出される
+    RequestHandlerクラスを継承してMainHandlerクラスを作っています。
+    リクエストを扱う際には、TornadoはこのMainHandlerクラスをインスタンス化し、リクエストのHTTPメソッドに対応したメソッドを呼び出します。
+    この例では、getメソッドだけ定義しているので、HTTP GETリクエストにのみ対応できます。
+    getメソッド以外には、POST、DELETE、PUTなどに対応した、post, delete, putメソッドなどがあります。
+    '''
     def get(self):
         self.render("index.html", title="title")
 
@@ -52,8 +59,13 @@ class FeedbackHandler(tornado.web.RequestHandler):
 
 
 class Application(tornado.web.Application):
+    '''
+    Applicationオブジェクトは、アプリケーション全体の設定をするために使われます。
+    '''
 
+    # コンストラクタ
     def __init__(self):
+        # ハンドラを設定する
         handlers = [
             (r"/", IndexHandler),
             (r"/predict", PredictionHandler),
