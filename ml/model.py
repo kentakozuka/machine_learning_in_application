@@ -4,8 +4,14 @@ import chainer.links as L
 
 
 class NumberRecognizeNN(chainer.Chain):
-
+    '''
+    '''
+    
     def __init__(self, input_size, output_size, hidden_size=200, layer_size=3):
+        '''
+        コンストラクタ
+        '''
+
         self.input_size = input_size
         self.output_size = output_size
         self.hidden_size = hidden_size

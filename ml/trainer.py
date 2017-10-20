@@ -8,11 +8,14 @@ from ml.data_processor import DataProcessor
 
 class Trainer():
 
+    # コンストラクタ
     def __init__(self, model, resource):
         self.model = model
         self.resource = resource
     
     def train(self, data, target, batch_size=100, epoch=5, test_size=0.3, report_interval_epoch=1):
+        '''
+        '''
         dp = DataProcessor()
         dp.set_normalization_params(data)
         self.resource.save_normalization_params(dp.means, dp.stds)

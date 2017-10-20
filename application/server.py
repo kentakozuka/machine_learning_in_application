@@ -21,15 +21,22 @@ class IndexHandler(tornado.web.RequestHandler):
 
 
 class PredictionHandler(tornado.web.RequestHandler):
+    '''
+    /predictにリクエストが会った時に呼び出される
+    '''
 
+    # POSTメソッドのハンドラ
     def post(self):
         resp = {"result": str(-1)}
         data = self.get_arguments("data[]")
 
         r = Resource()
         if not os.path.isdir(r.model_path):
+            # model.pyのインポート
             from ml.model import NumberRecognizeNN
+            # trainer.pyのインポート
             from ml.trainer import Trainer
+
             model = NumberRecognizeNN(r.INPUT_SIZE, r.OUTPUT_SIZE)
             trainer = Trainer(model, r)
             x, y = r.load_training_data()
@@ -45,7 +52,11 @@ class PredictionHandler(tornado.web.RequestHandler):
 
 
 class FeedbackHandler(tornado.web.RequestHandler):
+    '''
+    /feedbackにリクエストが会った時に呼び出される
+    '''
 
+    # POSTメソッドのハンドラ
     def post(self):
         data = self.get_arguments("data[]")
         if len(data) > 0:
@@ -61,6 +72,7 @@ class FeedbackHandler(tornado.web.RequestHandler):
 class Application(tornado.web.Application):
     '''
     Applicationオブジェクトは、アプリケーション全体の設定をするために使われます。
+    run_application.pyの中でインスタンス化され、HTTPServerに渡される。
     '''
 
     # コンストラクタ
@@ -72,12 +84,13 @@ class Application(tornado.web.Application):
             (r"/feedback", FeedbackHandler),
         ]
 
+        # 設定
         settings = dict(
-            template_path=os.path.join(os.path.dirname(__file__), "templates"),
-            static_path=os.path.join(os.path.dirname(__file__), "static"),
-            cookie_secret=os.environ.get("SECRET_TOKEN", "__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__"),
-            xsrf_cookies=True,
-            debug=True,
+            template_path   = os.path.join(os.path.dirname(__file__), "templates"),
+            static_path     = os.path.join(os.path.dirname(__file__), "static"),
+            cookie_secret   = os.environ.get("SECRET_TOKEN", "__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__"),
+            xsrf_cookies    = True,
+            debug           = True,
         )
 
         super(Application, self).__init__(handlers, **settings)
