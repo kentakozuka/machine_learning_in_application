@@ -5,6 +5,9 @@ import chainer.links as L
 
 class NumberRecognizeNN(chainer.Chain):
     '''
+    文字認識クラス
+    Chainerを継承
+    ここは要勉強
     '''
     
     def __init__(self, input_size, output_size, hidden_size=200, layer_size=3):

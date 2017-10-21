@@ -1,3 +1,4 @@
+# OSに依存した機能を使うための標準ライブラリ
 import os
 import tornado.web
 from ml.model_api import ModelAPI
@@ -11,10 +12,6 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), "../data/feedbacks.txt")
 class IndexHandler(tornado.web.RequestHandler):
     '''
     ルートディレクトリにリクエストがあった場合に呼び出される
-    RequestHandlerクラスを継承してMainHandlerクラスを作っています。
-    リクエストを扱う際には、TornadoはこのMainHandlerクラスをインスタンス化し、リクエストのHTTPメソッドに対応したメソッドを呼び出します。
-    この例では、getメソッドだけ定義しているので、HTTP GETリクエストにのみ対応できます。
-    getメソッド以外には、POST、DELETE、PUTなどに対応した、post, delete, putメソッドなどがあります。
     '''
     def get(self):
         self.render("index.html", title="title")
@@ -27,33 +24,47 @@ class PredictionHandler(tornado.web.RequestHandler):
 
     # POSTメソッドのハンドラ
     def post(self):
+
+        # レスポンス用マップを作成
         resp = {"result": str(-1)}
+        # 送られてきたデータを受け取る
         data = self.get_arguments("data[]")
 
         r = Resource()
+
+        # path が実在するディレクトリの場合
         if not os.path.isdir(r.model_path):
             # model.pyのインポート
             from ml.model import NumberRecognizeNN
             # trainer.pyのインポート
             from ml.trainer import Trainer
 
+            # モデル作成クラス (Chainer)
             model = NumberRecognizeNN(r.INPUT_SIZE, r.OUTPUT_SIZE)
+            # トレーニングクラス
             trainer = Trainer(model, r)
+            # トレーニングデータを取得
             x, y = r.load_training_data()
+            # トレーニング実施
             trainer.train(x, y)
+
+        # モデルをAPIに保存
         api = ModelAPI(r)
 
         if len(data) > 0:
             _data = [float(d) for d in data]
+            # 送られてきたデータから予測値を算出
             predicted = api.predict(_data)
+            # レスポンスにデータを格納
             resp["result"] = str(predicted[0])
 
+        # データを送信
         self.write(resp)
 
 
 class FeedbackHandler(tornado.web.RequestHandler):
     '''
-    /feedbackにリクエストが会った時に呼び出される
+    /feedbackにリクエストがあった時に呼び出される
     '''
 
     # POSTメソッドのハンドラ

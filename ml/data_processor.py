@@ -47,7 +47,12 @@ class DataProcessor():
         return _y 
     
     def set_normalization_params(self, x):
+        '''
+        '''
+
+        # 平均を求める
         self.means = np.mean(x, axis=0, dtype=np.float32)
+        # 標準偏差を求める
         self.stds = np.std(x, axis=0, dtype=np.float32)
         # simple trick to avoid 0 divide
         self.stds[self.stds < 1.0e-6] = np.max(x) - np.min(x)

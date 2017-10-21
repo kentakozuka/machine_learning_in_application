@@ -7,6 +7,10 @@ from ml.data_processor import DataProcessor
 
 
 class Trainer():
+'''
+    トレーニングをするクラス
+    細かいデータ処理はdata_processor内で行う
+    '''
 
     # コンストラクタ
     def __init__(self, model, resource):
@@ -15,12 +19,14 @@ class Trainer():
     
     def train(self, data, target, batch_size=100, epoch=5, test_size=0.3, report_interval_epoch=1):
         '''
+        トレーニングをするメソッド
         '''
         dp = DataProcessor()
         dp.set_normalization_params(data)
         self.resource.save_normalization_params(dp.means, dp.stds)
         _data = dp.format_x(data)
         _target = dp.format_y(target)
+        # データをトレーニング用とテスト用に分割
         train_x, test_x, train_y, test_y = train_test_split(_data, _target, test_size=test_size)
 
         optimizer = chainer.optimizers.Adam()

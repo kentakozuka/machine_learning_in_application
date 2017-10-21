@@ -7,6 +7,10 @@ from ml.data_processor import DataProcessor
 
 
 class Resource():
+    '''
+    データやモデルなどの出入力を行うクラス
+    '''
+
     INPUT_SIZE = 64  # 8 x 8 image size
     OUTPUT_SIZE = 10  # 10 classification
 
@@ -38,10 +42,15 @@ class Resource():
         return to_array(loaded["means"]), to_array(loaded["stds"])
     
     def load_training_data(self):
-        from sklearn.datasets import load_digits
-        # predifine set is from scikit-learn dataset
-        # http://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html
+        '''
+        scikit-learnの実験用データを呼び出す
+        Digits (数字の手書き文字)
+        0 ～ 9 の 10 文字の手書きの数字を64(8×8)個の画素に分解したもの
 
+        @return x   入力データ (data)
+        @return y   判定結果 (target)
+        '''
+        from sklearn.datasets import load_digits
         digits = load_digits()
         x = digits.data
         y = digits.target
@@ -80,10 +89,15 @@ class Resource():
         return label, features
 
     def save_model(self, model):
+        '''
+        モデルを保存するメソッド
+        '''
+        # ディレクトリが無い場合は作成
         if not os.path.exists(self.model_path):
             os.mkdir(self.model_path)
         timestamp = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
         model_file = os.path.join(self.model_path, "./" + model.__class__.__name__.lower() + "_" + timestamp + ".model")
+        # モデルを保存する
         serializers.save_npz(model_file, model)
     
     def load_model(self, model):

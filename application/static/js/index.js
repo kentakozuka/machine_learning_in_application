@@ -1,7 +1,13 @@
 var MAIN_ELEMENT = "#main"
 var CANVAS_ID = "canvas"
 
+/*
+ * Predictionクラス
+ */
 var Prediction = (function () {
+	/*
+	 * コンストラクタ
+	 */
     function Prediction(image, sample) {
         this.image = image;
         this.sampleImage = sample[0];
@@ -9,6 +15,9 @@ var Prediction = (function () {
         this.result = -1;
     }
 
+	/*
+	 * POSTでバックエンドに送るデータを作成する関数
+	 */
     Prediction.prototype.envelop = function (data) {
         var getCookie = function(name){
             var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
@@ -28,7 +37,15 @@ var Prediction = (function () {
     Prediction.prototype.execute = function () {
         var self = this;
         var d = new $.Deferred;
+		/* 
+		 * predict向けにPOSTを送る
+		 * @param 	url 		リクエストの送信先URLを指定
+		 * @param 	data 		サーバに送信する値をマップ値で指定
+		 * @param 	success		リクエスト成功時の処理を関数として指定
+		 * @param 	dataType	(省略)サーバから返されるデータ方式(xml, json, script, html)を指定
+		 */
         $.post("/predict", self.envelop(self.sampleData), function(prediction){
+			// 結果を受け取る
             self.result = prediction["result"];
             d.resolve(self)
         })
