@@ -5,9 +5,7 @@ from ml.model_api import ModelAPI
 from ml.data_processor import DataProcessor
 from ml.resource import Resource
 
-
 DATA_PATH = os.path.join(os.path.dirname(__file__), "../data/feedbacks.txt")
-
 
 class IndexHandler(tornado.web.RequestHandler):
     '''
@@ -24,7 +22,6 @@ class PredictionHandler(tornado.web.RequestHandler):
 
     # POSTメソッドのハンドラ
     def post(self):
-
         # レスポンス用マップを作成
         resp = {"result": str(-1)}
         # 送られてきたデータを受け取る
@@ -39,9 +36,9 @@ class PredictionHandler(tornado.web.RequestHandler):
             # trainer.pyのインポート
             from ml.trainer import Trainer
 
-            # モデル作成クラス (Chainer)
+            # モデル作成クラス (Chainer)をnew
             model = NumberRecognizeNN(r.INPUT_SIZE, r.OUTPUT_SIZE)
-            # トレーニングクラス
+            # トレーニングクラスをnew
             trainer = Trainer(model, r)
             # トレーニングデータを取得
             x, y = r.load_training_data()
@@ -94,7 +91,6 @@ class Application(tornado.web.Application):
             (r"/predict", PredictionHandler),
             (r"/feedback", FeedbackHandler),
         ]
-
         # 設定
         settings = dict(
             template_path   = os.path.join(os.path.dirname(__file__), "templates"),
@@ -103,5 +99,7 @@ class Application(tornado.web.Application):
             xsrf_cookies    = True,
             debug           = True,
         )
-
+        # 親クラスにのコンストラクタに登録
         super(Application, self).__init__(handlers, **settings)
+
+        

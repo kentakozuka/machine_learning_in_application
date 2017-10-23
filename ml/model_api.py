@@ -4,7 +4,10 @@ from ml.data_processor import DataProcessor
 
 
 class ModelAPI():
-
+    '''
+    ルートディレクトリにリクエストがあった場合に呼び出される
+    '''
+    
     def __init__(self, resource):
         self.resource = resource
         self.model = NumberRecognizeNN(resource.INPUT_SIZE, resource.OUTPUT_SIZE)
